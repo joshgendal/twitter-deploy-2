@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="/">HOME</a></li>
+      </ul>
+    </nav>
+    <h1>FEED</h1>
+    {% for tweet in all_tweets %}
+    <span>{{ tweet.user.first_name }} {{ tweet.user.last_name }}:</span>
+    <span>{{ tweet.text }} @{{ tweet.updated_at }}</span>
+    {% if request.session.user_id == tweet.user.id %}
+    <span><a href="/edit/{{ tweet.id }}">EDIT</a></span>
+    {% endif %} {% for comment in tweet.comments.all %}
+    <p>
+      {{ comment.user.first_name }} {{ comment.user.last_name }} commented
+      {{comment.text}}
+    </p>
+    {% endfor %}
+    <h2>Add comment</h2>
+    <form action="/add-comment" method="post">
+      {% csrf_token %}
+      <textarea name="comment_text" id="" cols="30" rows="10"></textarea>
+      <input type="hidden" name="tweet_id" value="{{ tweet.id }}" />
+      <button>Add Comment</button>
+    </form>
+    <hr />
+    {% endfor %}
+  </body>
+</html>
